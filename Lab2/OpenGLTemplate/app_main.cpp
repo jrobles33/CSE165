@@ -20,21 +20,24 @@ bool quad1 = false, quad2 = false, quad3 = false, quad4 = false, quad5 = false, 
 
 int quadarr[9];
 
-
 bool onClick = false;
 
 int valuearr[2];
 
+float theta = 0;
 
-    float theta = 0;
-    
-    float thetaInc = M_PI/100;
-    
-    float radius = 0.25;
-    
-    float funcxOffset;
-    
-    float funcyOffset;
+float thetaInc = M_PI/100;
+
+float radius = 0.25;
+
+float funcxOffset;
+
+float funcyOffset;
+
+int increm = 0;
+
+int remain;
+
 
 //-------------------------------------------------------
 // A function to draw the scene
@@ -59,9 +62,14 @@ void appDrawScene() {
 
     // Draw stuff here
     
-    
-     glBegin(GL_LINE_LOOP);
+    cout << "our current increm is " <<increm<< " so we should put a circle if even, and a x for odd"<<endl;
+    cout << "our current remainder is " <<remain<< " so we should put a circle if even, and a x for odd"<<endl;
+     
     if (onClick == true){
+    
+    if (remain == 0){
+        
+    glBegin(GL_LINE_LOOP);
     //Draw a Circle Here
     
     glColor3f(0.0, 1.0, 0.0);
@@ -77,11 +85,16 @@ void appDrawScene() {
     
     
     
-    }
+    
     
     glEnd();
+    }
+    if (remain != 0) {
+        cout <<"odd boys"<<endl;
+    }
     
     
+    }
     
     
     
@@ -159,6 +172,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 1;
         funcxOffset = 107;
         funcyOffset = 107;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x > 214 && x < 428 && y >= 0 && y < 214){
         quad2 = true;
@@ -166,6 +181,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 2;
         funcxOffset = 321;
         funcyOffset = 107;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x > 428 && x < 640 && y>=0 && y < 214){
         quad3 = true;
@@ -173,6 +190,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 3;
         funcxOffset = 535;
         funcyOffset = 107;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x >= 0 && x < 214 && y> 214 && y < 428){
         quad4 = true;
@@ -180,6 +199,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 4;
         funcxOffset = 107;
         funcyOffset = 321;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x > 214 && x < 428 && y> 214 && y < 428){
         quad5 = true;
@@ -187,6 +208,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 5;
         funcxOffset = 321;
         funcyOffset = 321;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x > 428 && x < 640 && y> 214 && y < 428){
         quad6 = true;
@@ -194,6 +217,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 6;
         funcxOffset = 535;
         funcyOffset = 321;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x >= 0 && x < 214 && y> 428 && y < 640){
         quad7 = true;
@@ -201,6 +226,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 7;
         funcxOffset = 107;
         funcyOffset = 535;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x > 214 && x < 428 && y> 428 && y < 640){
         quad8 = true;
@@ -208,6 +235,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 8;
         funcxOffset = 321;
         funcyOffset = 535;
+        increm++;
+        remain = (increm % 2);
     }
     else if (x > 428 && x < 640 && y> 428 && y < 640){
         quad9 = true;
@@ -215,6 +244,8 @@ int * QuadrantCheck(float x, float y){
         curQuad = 9;
         funcxOffset = 535;
         funcyOffset = 535;
+        increm++;
+        remain = (increm % 2);
     }
     
     
@@ -295,8 +326,9 @@ void appMouseFunc(int b, int s, int x, int y) {
 	// Redraw the scene by calling appDrawScene above
 	// so that the point we added above will get painted
     
-    if( s == 0) {
+    if( s == 1) {
         onClick = true;
+        increm+1;
         
         QuadrantCheck(x,y);
         
