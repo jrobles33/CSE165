@@ -16,30 +16,48 @@ using namespace std;
 int width = 640, height = 640;
 
 float mxpos, mypos;
+
 bool quad1 = false, quad2 = false, quad3 = false, quad4 = false, quad5 = false, quad6 = false, quad7 = false, quad8 = false, quad9 = false;
 
 int quadarr[9];
 
+int valuearr[2];
+
+int xchecksarr[9];
+
+int ochecksarr[9];
+
+int curQuad;
+
+float theta = 0;
+
+float thetaInc = M_PI/100;
+
+float radius = 0.25;
+
+float funcxOffset;
+
+float funcyOffset;
+
+int count = 1;
 
 bool onClick = false;
 
-int valuearr[2];
 
 
-    float theta = 0;
-    
-    float thetaInc = M_PI/100;
-    
-    float radius = 0.25;
-    
-    float funcxOffset;
-    
-    float funcyOffset;
 
 //-------------------------------------------------------
 // A function to draw the scene
 //-------------------------------------------------------
-void appDrawScene() {
+
+    
+    
+    void appDrawScene() {
+    
+    //Here we adjust the values from the 640 x 640 to the -1.0 - 1.0 floats
+    funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
+    funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
+        
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -50,32 +68,50 @@ void appDrawScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
     
-
     // Draw stuff here
     
-    
-     glBegin(GL_LINE_LOOP);
     if (onClick == true){
-    //Draw a Circle Here
+    if (count % 2 == 0){
+    //Beginning Cross
     
+    glColor3f(0.0 , 0.0 , 1.0);
+    glLineWidth(5);
+    glBegin(GL_LINES);
+    
+    glVertex2f(funcxOffset+.25 , funcyOffset-.25);
+    glVertex2f(funcxOffset-.25 , funcyOffset+.25);
+    
+    glVertex2f(funcxOffset+.25 , funcyOffset+.25);
+    glVertex2f(funcxOffset-.25 , funcyOffset-.25);
+    
+    xchecksarr[curQuad] = 1;
+    glEnd();
+    
+    
+    }
+    //Beginning Circle
+    
+    else {
     glColor3f(0.0, 1.0, 0.0);
     
-    cout<<"our x funcxOffset is " << funcxOffset<<endl<<endl<<"our y funcyOffset is "<<funcyOffset<<endl<<endl;
+    
+    glBegin(GL_LINE_LOOP);
     
     
    
     
+    
     for (theta; theta < 2*M_PI; theta+=thetaInc) {
-        glVertex2f(radius * cos(theta) + funcxOffset, radius * sin(theta) + funcyOffset);
+        
+        glVertex2f(radius * cos(theta) + funcxOffset, radius * sin(theta) + funcyOffset);  
+    
+    
     }
-    
-    
-    
-    }
-    
+    ochecksarr[curQuad] = 1;
     glEnd();
     
-    
+    }
+    }
     
     
     
@@ -120,6 +156,58 @@ void appDrawScene() {
 	// Swap the buffers to see the result of what we drew
 	glFlush();
 	glutSwapBuffers();
+    
+     //X possibilites
+    if (xchecksarr[1] == 1 && xchecksarr[2] == 1 && xchecksarr[3] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    else if (xchecksarr[4] == 1 && xchecksarr[5] == 1 && xchecksarr[6] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    else if (xchecksarr[7] == 1 && xchecksarr[8] == 1 && xchecksarr[9] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    else if (xchecksarr[1] == 1 && xchecksarr[5] == 1 && xchecksarr[9] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    else if (xchecksarr[3] == 1 && xchecksarr[5] == 1 && xchecksarr[7] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    else if (xchecksarr[1] == 1 && xchecksarr[4] == 1 && xchecksarr[7] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    else if (xchecksarr[2] == 1 && xchecksarr[5] == 1 && xchecksarr[8] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    else if (xchecksarr[3] == 1 && xchecksarr[6] == 1 && xchecksarr[9] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+    }
+    //O possibilies
+    else if (ochecksarr[1] == 1 && ochecksarr[2] == 1 && ochecksarr[3] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    else if (ochecksarr[4] == 1 && xchecksarr[5] == 1 && ochecksarr[6] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    else if (ochecksarr[7] == 1 && xchecksarr[8] == 1 && ochecksarr[9] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    else if (ochecksarr[1] == 1 && xchecksarr[5] == 1 && ochecksarr[9] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    else if (ochecksarr[3] == 1 && xchecksarr[5] == 1 && ochecksarr[7] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    else if (ochecksarr[1] == 1 && xchecksarr[4] == 1 && ochecksarr[7] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    else if (ochecksarr[2] == 1 && xchecksarr[5] == 1 && ochecksarr[8] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    else if (ochecksarr[3] == 1 && xchecksarr[6] == 1 && ochecksarr[9] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+    }
+    
 }
 
 //-------------------------------------------------------
@@ -128,6 +216,8 @@ void appDrawScene() {
 // Arguments: 	
 //	x, y - the coordinates to be updated
 //-------------------------------------------------------
+
+
 void windowToScene(float& x, float& y) {
 	x = (2.0f*(x / float(width))) - 1.0f;
 	y = 1.0f - (2.0f*(y / float(height)));
@@ -146,7 +236,6 @@ void windowToScene(float& x, float& y) {
 int * QuadrantCheck(float x, float y){
     //a lot of if statements that are tedious because I'm too dumb to figure out how to do it iteravily
     //quad check so we know where we are and what gets full
-    int curQuad;
     if (x >= 0 && x < 214 && y>=0 && y < 214){
         quad1 = true;
         quadarr[1] = 1;
@@ -289,14 +378,17 @@ void appMouseFunc(int b, int s, int x, int y) {
 	// Redraw the scene by calling appDrawScene above
 	// so that the point we added above will get painted
     
-    if( s == 0) {
+    if(s == 0) {
         onClick = true;
-        
         QuadrantCheck(x,y);
-        
+        count++;
        cout<<"We clicked at ( " <<x << " , " << y<< " ) and we are in quadrant "<< valuearr[0]<<endl;
         
     }
+    else {
+        onClick = false;
+    }
+    
 	glutPostRedisplay();
      
 }
