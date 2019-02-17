@@ -38,6 +38,7 @@ int increm = 0;
 
 int remain;
 
+bool linecheck = false;
 
 //-------------------------------------------------------
 // A function to draw the scene
@@ -62,8 +63,8 @@ void appDrawScene() {
 
     // Draw stuff here
     
-    cout << "our current increm is " <<increm<< " so we should put a circle if even, and a x for odd"<<endl;
-    cout << "our current remainder is " <<remain<< " so we should put a circle if even, and a x for odd"<<endl;
+    //cout << "our current increm is " <<increm<< " so we should put a circle if even, and a x for odd"<<endl;
+    //cout << "our current remainder is " <<remain<< " so we should put a circle if even, and a x for odd"<<endl;
      
     if (onClick == true){
     
@@ -74,7 +75,7 @@ void appDrawScene() {
     
     glColor3f(0.0, 1.0, 0.0);
     
-    cout<<"our x funcxOffset is " << funcxOffset<<endl<<endl<<"our y funcyOffset is "<<funcyOffset<<endl<<endl;
+    //cout<<"our x funcxOffset is " << funcxOffset<<endl<<endl<<"our y funcyOffset is "<<funcyOffset<<endl<<endl;
     
     
    
@@ -90,7 +91,23 @@ void appDrawScene() {
     glEnd();
     }
     if (remain != 0) {
-        cout <<"odd boys"<<endl;
+        glColor3f(0.0 , 0.0, 1.0);
+        glLineWidth(5);
+        glBegin(GL_LINES);
+        
+        glVertex2f(funcxOffset-.25 , funcyOffset+.25);
+        glVertex2f(funcxOffset+.25 , funcyOffset-.25);
+        
+        glVertex2f(funcxOffset+.25 , funcyOffset+.25);
+        glVertex2f(funcxOffset-.25 , funcyOffset-.25);
+        
+        
+        funcxOffset = 0;
+        funcyOffset = 0;
+        glEnd();
+
+
+    
     }
     
     
@@ -325,18 +342,23 @@ void appMouseFunc(int b, int s, int x, int y) {
 
 	// Redraw the scene by calling appDrawScene above
 	// so that the point we added above will get painted
-    
+    if(b == 0){
+        linecheck = true;
     if( s == 1) {
         onClick = true;
-        increm+1;
+        
         
         QuadrantCheck(x,y);
         
-       cout<<"We clicked at ( " <<x << " , " << y<< " ) and we are in quadrant "<< valuearr[0]<<endl;
+       //cout<<"We clicked at ( " <<x << " , " << y<< " ) and we are in quadrant "<< valuearr[0]<<endl;
         
+    }
+    if (s == 0){
+        onClick = false;
     }
 	glutPostRedisplay();
      
+}
 }
    
 //-------------------------------------------------------
