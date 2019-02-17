@@ -54,9 +54,6 @@ bool onClick = false;
     
     void appDrawScene() {
     
-    //Here we adjust the values from the 640 x 640 to the -1.0 - 1.0 floats
-    funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
-    funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
         
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,8 +67,30 @@ bool onClick = false;
     
     // Draw stuff here
     
+    
+    
+    glBegin(GL_LINE_LOOP);
+    glColor3f(0.0, 1.0, 1.0);
+    
+    for (theta; theta <2*M_PI; theta+=thetaInc){
+     glVertex2f(radius *cos(theta) + 0, radius * sin(theta) + 0);   
+    }
+    glEnd();
+    
+   
+    
+    
+    for (theta; theta < 2*M_PI; theta+=thetaInc) {
+        
+        glVertex2f(radius * cos(theta) + funcxOffset, radius * sin(theta) + funcyOffset);  
+    
+    
+    }
+    ochecksarr[curQuad] = 1;
+    glEnd();
+    
     if (onClick == true){
-    if (count % 2 == 0){
+    //if (count % 2 == 0){
     //Beginning Cross
     
     glColor3f(0.0 , 0.0 , 1.0);
@@ -91,7 +110,7 @@ bool onClick = false;
     }
     //Beginning Circle
     
-    else {
+   // else {
     glColor3f(0.0, 1.0, 0.0);
     
     
@@ -110,8 +129,8 @@ bool onClick = false;
     ochecksarr[curQuad] = 1;
     glEnd();
     
-    }
-    }
+  //  }
+    //}
     
     
     
@@ -154,9 +173,8 @@ bool onClick = false;
     
 	// We have been drawing everything to the back buffer
 	// Swap the buffers to see the result of what we drew
-	glFlush();
-	glutSwapBuffers();
-    
+	
+    /*
      //X possibilites
     if (xchecksarr[1] == 1 && xchecksarr[2] == 1 && xchecksarr[3] == 1){
         cout<<" X IS THE WINNER" <<endl;
@@ -207,7 +225,10 @@ bool onClick = false;
     else if (ochecksarr[3] == 1 && xchecksarr[6] == 1 && ochecksarr[9] == 1){
         cout<<" O IS THE WINNER" <<endl;
     }
+ */  
     
+    glFlush();
+	glutSwapBuffers();
 }
 
 //-------------------------------------------------------
@@ -379,14 +400,14 @@ void appMouseFunc(int b, int s, int x, int y) {
 	// so that the point we added above will get painted
     
     if(s == 0) {
-        onClick = true;
+    //    onClick = true;
         QuadrantCheck(x,y);
         count++;
        cout<<"We clicked at ( " <<x << " , " << y<< " ) and we are in quadrant "<< valuearr[0]<<endl;
         
-    }
-    else {
-        onClick = false;
+    //}
+    //else {
+     //   onClick = false;
     }
     
 	glutPostRedisplay();
