@@ -72,7 +72,6 @@ void appDrawScene() {
  if (onClick == true){
 
 if (curQuad > 0 && curQuad <= 9){
-
     if(remain == 0 ){
         xoffsetarr[curQuad + 9] = funcxOffset;
         yoffsetarr[curQuad + 9] = funcyOffset;
@@ -91,6 +90,7 @@ if (curQuad > 0 && curQuad <= 9){
 
         
         for (int i = 10; i <= 18; i ++){
+            if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
         
     //This is for the "O"
     
@@ -114,9 +114,10 @@ if (curQuad > 0 && curQuad <= 9){
     
     
     }
+        }
     
     for (int i = 1; i <= 9; i++){
-        
+        if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
     
              
             
@@ -133,6 +134,7 @@ if (curQuad > 0 && curQuad <= 9){
 
         glEnd();
                 }
+    }
                 
  }
     
