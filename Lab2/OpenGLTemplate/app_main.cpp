@@ -36,20 +36,29 @@ float funcyOffset;
 
 int increm = 0;
 
+int curQuad;
+
+//should be 0 for the Circles and != 0 for the X
 int remain;
 
 bool linecheck = false;
+
+//here we will store the X offsets and the "X" will be from 0 to 9, "O" will be from 10 - 18
+float xoffsetarr[18] = { 5 , 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 , 5 , 5, 5};
+
+//here we will store the Y offsets and the "X" will be from 0 to 9, "O" will be from 10 - 18
+float yoffsetarr[18] = { 5 , 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 , 5 , 5, 5};
 
 //-------------------------------------------------------
 // A function to draw the scene
 //-------------------------------------------------------
 void appDrawScene() {
+   
     
-    //void windowToScene(float& x, float& y) {
 	funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
 	funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
-//}
-    
+    cout <<curQuad<<endl;
+
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -59,71 +68,86 @@ void appDrawScene() {
 	// Set up the transformations stack
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-    
+
+ if (onClick == true){
+
+if (curQuad > 0 && curQuad <= 9){
+
+    if(remain == 0 ){
+        xoffsetarr[curQuad + 9] = funcxOffset;
+        yoffsetarr[curQuad + 9] = funcyOffset;
+    }
+    if(remain != 0){
+        xoffsetarr[curQuad] = funcxOffset;
+        yoffsetarr[curQuad] = funcyOffset;
+    }
+}
+
 
     // Draw stuff here
     
-    //cout << "our current increm is " <<increm<< " so we should put a circle if even, and a x for odd"<<endl;
-    //cout << "our current remainder is " <<remain<< " so we should put a circle if even, and a x for odd"<<endl;
-     
-    if (onClick == true){
     
-    if (remain == 0){
+    
+
         
+        for (int i = 10; i <= 18; i ++){
+        
+    //This is for the "O"
+    
     glBegin(GL_LINE_LOOP);
     //Draw a Circle Here
-    
+
     glColor3f(0.0, 1.0, 0.0);
+
     
-    //cout<<"our x funcxOffset is " << funcxOffset<<endl<<endl<<"our y funcyOffset is "<<funcyOffset<<endl<<endl;
     
-    
-   
     
     for (theta; theta < 2*M_PI; theta+=thetaInc) {
-        glVertex2f(radius * cos(theta) + funcxOffset, radius * sin(theta) + funcyOffset);
+        glVertex2f(radius * cos(theta) + xoffsetarr[i], radius * sin(theta) + yoffsetarr[i]);
     }
     
-    
-    
+    cout <<"we should have drawn a circle"<<endl;;
     
     
     glEnd();
+    
+    
+    
     }
-    if (remain != 0) {
+    
+    for (int i = 1; i <= 9; i++){
+        
+    
+             
+            
+                    
         glColor3f(0.0 , 0.0, 1.0);
         glLineWidth(5);
         glBegin(GL_LINES);
-        
-        glVertex2f(funcxOffset-.25 , funcyOffset+.25);
-        glVertex2f(funcxOffset+.25 , funcyOffset-.25);
-        
-        glVertex2f(funcxOffset+.25 , funcyOffset+.25);
-        glVertex2f(funcxOffset-.25 , funcyOffset-.25);
-        
-        
-        funcxOffset = 0;
-        funcyOffset = 0;
+
+        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]+.25);
+        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]-.25);
+
+        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]+.25);
+        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]-.25);
+
         glEnd();
+                }
+                
+ }
+    
+    
+    
+    
 
-
-    
-    }
-    
-    
-    }
-    
-    
-    
-    
     //GRID DREW HERE
-    
+
     glColor3f(1.0, 0.0, 0.0);
-    
+
     glLineWidth(5);
-    
+
     glBegin(GL_LINES);
-    
+
     //bottom horizontal
     glVertex2f(-1.0, -0.33);
     glVertex2f(1.0, -0.33);
@@ -149,6 +173,8 @@ void appDrawScene() {
     glVertex2f(0.33, -1.0);
     
     glEnd();
+    
+    
     
     //GRID ENDING HERE
     
@@ -182,7 +208,6 @@ void windowToScene(float& x, float& y) {
 int * QuadrantCheck(float x, float y){
     //a lot of if statements that are tedious because I'm too dumb to figure out how to do it iteravily
     //quad check so we know where we are and what gets full
-    int curQuad;
     if (x >= 0 && x < 214 && y>=0 && y < 214){
         quad1 = true;
         quadarr[1] = 1;
