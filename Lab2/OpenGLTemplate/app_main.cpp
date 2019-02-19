@@ -94,22 +94,28 @@ if (curQuad > 0 && curQuad <= 9){
         
     //This is for the "O"
     
-    glBegin(GL_LINE_LOOP);
+    
     //Draw a Circle Here
 
     glColor3f(0.0, 1.0, 0.0);
+	
+	glLineWidth(5);
+	glBegin(GL_LINES);
 
+	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] + .25);
+	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] - .25);
+
+	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] + .25);
+	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] - .25);
     
+    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] +.25);
+    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] -.25);
     
+    glVertex2f(xoffsetarr[i] -.25, yoffsetarr[i] +.25);
+    glVertex2f(xoffsetarr[i] -.25 , yoffsetarr[i] -.25);
     
-    for (theta; theta < 2*M_PI; theta+=thetaInc) {
-        glVertex2f(radius * cos(theta) + xoffsetarr[i], radius * sin(theta) + yoffsetarr[i]);
-    }
-    
-    cout <<"we should have drawn a circle"<<endl;;
-    
-    
-    glEnd();
+
+	glEnd();
     
     
     
