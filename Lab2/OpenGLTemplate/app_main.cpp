@@ -18,9 +18,15 @@ int width = 640, height = 640;
 float mxpos, mypos;
 bool quad1 = false, quad2 = false, quad3 = false, quad4 = false, quad5 = false, quad6 = false, quad7 = false, quad8 = false, quad9 = false;
 
+int xchecksarr[10] = { 0, 0 , 0 , 0, 0, 0, 0, 0, 0, 0};
+
+int ochecksarr[10] = { 0 , 0 , 0, 0, 0, 0, 0, 0, 0, 0};
+
 int quadarr[9];
 
 bool onClick = false;
+
+bool winnercheck = false;
 
 int valuearr[2];
 
@@ -38,6 +44,8 @@ int increm = 0;
 
 int curQuad;
 
+int playerset;
+
 //should be 0 for the Circles and != 0 for the X
 int remain;
 
@@ -53,11 +61,80 @@ float yoffsetarr[18] = { 5 , 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 , 5 , 5, 5
 // A function to draw the scene
 //-------------------------------------------------------
 void appDrawScene() {
+    
+    
+    
+     if (xchecksarr[1] == 1 && xchecksarr[2] == 1 && xchecksarr[3] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (xchecksarr[4] == 1 && xchecksarr[5] == 1 && xchecksarr[6] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (xchecksarr[7] == 1 && xchecksarr[8] == 1 && xchecksarr[9] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (xchecksarr[1] == 1 && xchecksarr[5] == 1 && xchecksarr[9] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (xchecksarr[3] == 1 && xchecksarr[5] == 1 && xchecksarr[7] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (xchecksarr[1] == 1 && xchecksarr[4] == 1 && xchecksarr[7] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (xchecksarr[2] == 1 && xchecksarr[5] == 1 && xchecksarr[8] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (xchecksarr[3] == 1 && xchecksarr[6] == 1 && xchecksarr[9] == 1){
+        cout<<" X IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    //O possibilies
+    else if (ochecksarr[1] == 1 && ochecksarr[2] == 1 && ochecksarr[3] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (ochecksarr[4] == 1 && ochecksarr[5] == 1 && ochecksarr[6] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (ochecksarr[7] == 1 && ochecksarr[8] == 1 && ochecksarr[9] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (ochecksarr[1] == 1 && ochecksarr[5] == 1 && ochecksarr[9] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (ochecksarr[3] == 1 && ochecksarr[5] == 1 && ochecksarr[7] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (ochecksarr[1] == 1 && ochecksarr[4] == 1 && ochecksarr[7] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (ochecksarr[2] == 1 && ochecksarr[5] == 1 && ochecksarr[8] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
+    else if (ochecksarr[3] == 1 && ochecksarr[6] == 1 && ochecksarr[9] == 1){
+        cout<<" O IS THE WINNER" <<endl;
+        winnercheck = true;
+    }
    
+   if (playerset == 2 && winnercheck == false){
     
 	funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
 	funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
-    cout <<curQuad<<endl;
+    //cout <<curQuad<<endl;
 
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,13 +147,17 @@ void appDrawScene() {
 	glLoadIdentity();
 
  if (onClick == true){
+     
 
 if (curQuad > 0 && curQuad <= 9){
     if(remain == 0 ){
+        
+        ochecksarr[curQuad] = 1;
         xoffsetarr[curQuad + 9] = funcxOffset;
         yoffsetarr[curQuad + 9] = funcyOffset;
     }
     if(remain != 0){
+        xchecksarr[curQuad] = 1;
         xoffsetarr[curQuad] = funcxOffset;
         yoffsetarr[curQuad] = funcyOffset;
     }
@@ -93,7 +174,6 @@ if (curQuad > 0 && curQuad <= 9){
             if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
         
     //This is for the "O"
-    
     
     //Draw a Circle Here
 
@@ -144,7 +224,7 @@ if (curQuad > 0 && curQuad <= 9){
                 
  }
     
-    
+   
     
     
 
@@ -192,12 +272,19 @@ if (curQuad > 0 && curQuad <= 9){
 	glutSwapBuffers();
 }
 
+    
+}
+
 //-------------------------------------------------------
 // A function to convert window coordinates to scene
 // We use it when a mouse event is handled
 // Arguments: 	
 //	x, y - the coordinates to be updated
 //-------------------------------------------------------
+
+
+    
+
 void windowToScene(float& x, float& y) {
 	x = (2.0f*(x / float(width))) - 1.0f;
 	y = 1.0f - (2.0f*(y / float(height)));
@@ -435,6 +522,8 @@ void idle() {
 
 
 int main(int argc, char** argv) {
+    cout<<"PLEASE ENTER 1 FOR SINGLE PLAYER OR 2 FOR TWO PLAYER"<<endl;
+    cin>>playerset;
 	// Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
