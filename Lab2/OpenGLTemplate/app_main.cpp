@@ -40,11 +40,17 @@ float funcxOffset;
 
 float funcyOffset;
 
+float aifuncxOffset;
+
+float aifuncyOffset;
+
 int increm = 0;
 
 int curQuad;
 
 int playerset;
+
+int AIturn = 0;
 
 //should be 0 for the Circles and != 0 for the X
 int remain;
@@ -60,11 +66,104 @@ float yoffsetarr[18] = { 5 , 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 , 5 , 5, 5
 //-------------------------------------------------------
 // A function to draw the scene
 //-------------------------------------------------------
+
+
+
+int AIxOffsets(int quadrantvalue){
+    if(quadrantvalue == 1){
+        aifuncxOffset = 107;
+        AIturn=0;
+    }
+    if(quadrantvalue == 2){
+        aifuncxOffset = 321;
+        AIturn=0;
+    }
+    if(quadrantvalue == 3){
+        aifuncxOffset = 535;
+        AIturn=0;
+    }
+    if(quadrantvalue == 4){
+        aifuncxOffset = 107;
+        AIturn=0;
+    }
+    if(quadrantvalue == 5){
+        aifuncxOffset = 321;
+        AIturn=0;
+    }
+    if(quadrantvalue == 6){
+        aifuncxOffset = 535;
+        AIturn=0;
+    }
+    if(quadrantvalue == 7){
+        aifuncxOffset = 107;
+        AIturn=0;
+    }
+    if(quadrantvalue == 8){
+        aifuncxOffset = 321;
+        AIturn=0;
+    }
+    if(quadrantvalue == 9){
+        aifuncxOffset = 535;
+        AIturn=0;
+    }
+    return aifuncyOffset;
+}
+
+int AIyOffsets(int quadrantvalue){
+if(quadrantvalue == 1){
+        aifuncyOffset = 107;
+        AIturn=0;
+    }
+    if(quadrantvalue == 2){
+        aifuncyOffset = 107;
+        AIturn=0;
+    }
+    if(quadrantvalue == 3){
+        aifuncyOffset = 107;
+        AIturn=0;
+    }
+    if(quadrantvalue == 4){
+        aifuncyOffset = 321;
+        AIturn=0;
+    }
+    if(quadrantvalue == 5){
+        aifuncyOffset = 321;
+        AIturn=0;
+    }
+    if(quadrantvalue == 6){
+        aifuncyOffset = 321;
+        AIturn=0;
+    }
+    if(quadrantvalue == 7){
+        aifuncyOffset = 535;
+        AIturn=0;
+    }
+    if(quadrantvalue == 8){
+        aifuncyOffset = 535;
+        AIturn=0;
+    }
+    if(quadrantvalue == 9){
+        aifuncyOffset = 535;
+        AIturn=0;
+    }
+    return aifuncxOffset;
+
+}
+
+
 void appDrawScene() {
     
     
     
-     if (xchecksarr[1] == 1 && xchecksarr[2] == 1 && xchecksarr[3] == 1){
+    
+    
+    
+    
+    //TWO PLAYER START HERE
+   
+   if (playerset == 2 && winnercheck == false){
+       
+        if (xchecksarr[1] == 1 && xchecksarr[2] == 1 && xchecksarr[3] == 1){
         cout<<" X IS THE WINNER" <<endl;
         winnercheck = true;
     }
@@ -129,8 +228,6 @@ void appDrawScene() {
         cout<<" O IS THE WINNER" <<endl;
         winnercheck = true;
     }
-   
-   if (playerset == 2 && winnercheck == false){
     
 	funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
 	funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
@@ -207,6 +304,179 @@ if (curQuad > 0 && curQuad <= 9){
     
              
             
+        
+        glColor3f(0.0 , 0.0, 1.0);
+        glLineWidth(5);
+        glBegin(GL_LINES);
+
+        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]+.25);
+        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]-.25);
+
+        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]+.25);
+        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]-.25);
+
+        glEnd();
+                }
+    }
+                
+ }
+    
+   
+    
+    
+
+    //GRID DREW HERE
+
+    glColor3f(1.0, 0.0, 0.0);
+
+    glLineWidth(5);
+
+    glBegin(GL_LINES);
+
+    //bottom horizontal
+    glVertex2f(-1.0, -0.33);
+    glVertex2f(1.0, -0.33);
+    
+    //left vertical
+    glVertex2f(-0.33, 1.0);
+    glVertex2f(-0.33, -1.0);
+    
+    //middle horizontal
+    //glVertex2f(-1.0, 0.0);
+    //glVertex2f(1.0, 0.0);
+    
+    //middle vertical
+    //glVertex2f(0.0, 1.0);
+    //glVertex2f(0.0, -1.0);
+    
+    //top horizontal
+    glVertex2f(-1.0, 0.33);
+    glVertex2f(1.0, 0.33);
+    
+    //right vertical
+    glVertex2f(0.33, 1.0);
+    glVertex2f(0.33, -1.0);
+    
+    glEnd();
+    
+    
+    
+    //GRID ENDING HERE
+    
+	// We have been drawing everything to the back buffer
+	// Swap the buffers to see the result of what we drew
+	glFlush();
+	glutSwapBuffers();
+}
+
+
+
+
+
+
+//SINGLE PLAYER VERSUS AI START HERE 
+
+
+
+
+
+   if (playerset == 1 && winnercheck == false){
+    
+	funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
+	funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
+    //cout <<curQuad<<endl;
+
+	// Clear the screen
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Set background color to black
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+
+	// Set up the transformations stack
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+ if (onClick == true){
+     
+
+if (curQuad > 0 && curQuad <= 9){
+    if(remain == 0 ){
+        
+        ochecksarr[curQuad] = 1;
+        xoffsetarr[curQuad + 9] = funcxOffset;
+        yoffsetarr[curQuad + 9] = funcyOffset;
+        AIturn+1;
+        
+    }
+   
+    if(remain != 0){
+         if(AIturn == 1){
+        
+        for(int i = 1; i < 10; i++){
+            if(ochecksarr[i] == 0 && xchecksarr[i] == 0){
+                
+        
+        funcxOffset = AIxOffsets(i);
+        funcyOffset = AIyOffsets(i);
+        
+        funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
+        funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
+        xoffsetarr[i] = funcxOffset;
+        yoffsetarr[i] = funcyOffset;
+        xchecksarr[i] = 1;
+        increm++;
+        remain = (increm % 2);
+        
+    }
+        }
+}
+}
+}
+
+
+    // Draw stuff here
+    
+    
+    
+
+        
+        for (int i = 10; i <= 18; i ++){
+            if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
+        
+    //This is for the "O"
+    
+    //Draw a Circle Here
+
+    glColor3f(0.0, 1.0, 0.0);
+	
+	glLineWidth(5);
+	glBegin(GL_LINES);
+
+	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] + .25);
+	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] - .25);
+
+	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] + .25);
+	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] - .25);
+    
+    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] +.25);
+    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] -.25);
+    
+    glVertex2f(xoffsetarr[i] -.25, yoffsetarr[i] +.25);
+    glVertex2f(xoffsetarr[i] -.25 , yoffsetarr[i] -.25);
+    
+
+	glEnd();
+    
+    
+    
+    }
+        }
+    
+    for (int i = 1; i <= 9; i++){
+        if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
+    
+             
+        cout<<"We should be drawing an X here at " <<xoffsetarr[i] << " , " <<yoffsetarr[i]<<endl;
                     
         glColor3f(0.0 , 0.0, 1.0);
         glLineWidth(5);
