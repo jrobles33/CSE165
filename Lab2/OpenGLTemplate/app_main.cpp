@@ -300,6 +300,7 @@ void appKeyboardFunc(unsigned char key, int x, int y) {
             break;
         case 'p':
             if (gameOver){
+                if (ai == true){
                 for (int i = 0; i < grid.size(); i++) {
                     grid[i].shape = none;
                     grid[i].occupied = false;
@@ -307,6 +308,16 @@ void appKeyboardFunc(unsigned char key, int x, int y) {
                     player1 = true;
                 }
                 ai = false;
+                }
+                else if (ai == false){
+                    for (int i = 0; i < grid.size(); i++) {
+                    grid[i].shape = none;
+                    grid[i].occupied = false;
+                    gameOver = false;
+                    player1 = true;
+                }
+                ai = true;
+                }
             }
             break;
         case ' ':
