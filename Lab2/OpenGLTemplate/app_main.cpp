@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 #if defined WIN32
 #include <freeglut.h>
@@ -9,230 +10,113 @@
 #include <GL/freeglut.h>
 #endif
 
+#include "Rect.h"
 
 using namespace std;
 
 // Store the width and height of the window
 int width = 640, height = 640;
 
-float mxpos, mypos;
-bool quad1 = false, quad2 = false, quad3 = false, quad4 = false, quad5 = false, quad6 = false, quad7 = false, quad8 = false, quad9 = false;
+bool player1 = true;
+bool gameOver = false;
 
-int xchecksarr[10] = { 0, 0 , 0 , 0, 0, 0, 0, 0, 0, 0};
 
-int ochecksarr[10] = { 0 , 0 , 0, 0, 0, 0, 0, 0, 0, 0};
+//Rect rect = Rect(0.3, 0.5, 0.5, 0.5);
 
-int quadarr[9];
+vector<Rect> grid;
 
-bool onClick = false;
+bool ai = true;
 
-bool winnercheck = false;
+bool winX(vector<Rect> grid);
+bool winO(vector<Rect> grid);
 
-int valuearr[2];
 
-float theta = 0;
+void checkGameState(vector<Rect> grid){
+    if (winX(grid)){
+        cout << "X wins" << endl;
+        gameOver = true;
+    }
+    if (winO(grid)){
+        cout << "O wins" << endl;
+        gameOver = true;
+    }
+    
+    if (!gameOver){
+        bool flag = true;
+        for (int i = 0; i < grid.size(); i++) {
+            if (!grid[i].occupied){
+                flag = false;
+                break;
+            }
+        }
+        if (flag){
+            gameOver = true;
+            cout << "Nobody wins" << endl;
+        }
+    }
+}
 
-float thetaInc = M_PI/100;
+bool winX(vector<Rect> grid){
+    Shape temp = cross;
+    if (grid[0].shape == temp && grid[1].shape ==  temp && grid[2].shape == temp){
+        return true;
+    }
+    if (grid[3].shape == temp && grid[4].shape ==  temp && grid[5].shape == temp){
+        return true;
+    }
+    if (grid[6].shape == temp && grid[7].shape ==  temp && grid[8].shape == temp){
+        return true;
+    }
+    if (grid[0].shape == temp && grid[3].shape ==  temp && grid[6].shape == temp){
+        return true;
+    }
+    if (grid[1].shape == temp && grid[4].shape ==  temp && grid[7].shape == temp){
+        return true;
+    }
+    if (grid[2].shape == temp && grid[5].shape ==  temp && grid[8].shape == temp){
+        return true;
+    }
+    if (grid[0].shape == temp && grid[4].shape ==  temp && grid[8].shape == temp){
+        return true;
+    }
+    if (grid[2].shape == temp && grid[4].shape ==  temp && grid[6].shape == temp){
+        return true;
+    }
+}
 
-float radius = 0.25;
+bool winO(vector<Rect> grid){
+    Shape temp = circle;
+    if (grid[0].shape == temp && grid[1].shape ==  temp && grid[2].shape == temp){
+        return true;
+    }
+    if (grid[3].shape == temp && grid[4].shape ==  temp && grid[5].shape == temp){
+        return true;
+    }
+    if (grid[6].shape == temp && grid[7].shape ==  temp && grid[8].shape == temp){
+        return true;
+    }
+    if (grid[0].shape == temp && grid[3].shape ==  temp && grid[6].shape == temp){
+        return true;
+    }
+    if (grid[1].shape == temp && grid[4].shape ==  temp && grid[7].shape == temp){
+        return true;
+    }
+    if (grid[2].shape == temp && grid[5].shape ==  temp && grid[8].shape == temp){
+        return true;
+    }
+    if (grid[0].shape == temp && grid[4].shape ==  temp && grid[8].shape == temp){
+        return true;
+    }
+    if (grid[2].shape == temp && grid[4].shape ==  temp && grid[6].shape == temp){
+        return true;
+    }
+}
 
-float funcxOffset;
-
-float funcyOffset;
-
-float aifuncxOffset;
-
-float aifuncyOffset;
-
-int increm = 0;
-
-int curQuad;
-
-int playerset;
-
-int AIturn = 0;
-
-//should be 0 for the Circles and != 0 for the X
-int remain;
-
-bool linecheck = false;
-
-//here we will store the X offsets and the "X" will be from 0 to 9, "O" will be from 10 - 18
-float xoffsetarr[18] = { 5 , 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 , 5 , 5, 5};
-
-//here we will store the Y offsets and the "X" will be from 0 to 9, "O" will be from 10 - 18
-float yoffsetarr[18] = { 5 , 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 , 5 , 5, 5};
 
 //-------------------------------------------------------
 // A function to draw the scene
 //-------------------------------------------------------
-
-
-
-int AIxOffsets(int quadrantvalue){
-    if(quadrantvalue == 1){
-        aifuncxOffset = 107;
-        AIturn=0;
-    }
-    if(quadrantvalue == 2){
-        aifuncxOffset = 321;
-        AIturn=0;
-    }
-    if(quadrantvalue == 3){
-        aifuncxOffset = 535;
-        AIturn=0;
-    }
-    if(quadrantvalue == 4){
-        aifuncxOffset = 107;
-        AIturn=0;
-    }
-    if(quadrantvalue == 5){
-        aifuncxOffset = 321;
-        AIturn=0;
-    }
-    if(quadrantvalue == 6){
-        aifuncxOffset = 535;
-        AIturn=0;
-    }
-    if(quadrantvalue == 7){
-        aifuncxOffset = 107;
-        AIturn=0;
-    }
-    if(quadrantvalue == 8){
-        aifuncxOffset = 321;
-        AIturn=0;
-    }
-    if(quadrantvalue == 9){
-        aifuncxOffset = 535;
-        AIturn=0;
-    }
-    return aifuncyOffset;
-}
-
-int AIyOffsets(int quadrantvalue){
-if(quadrantvalue == 1){
-        aifuncyOffset = 107;
-        AIturn=0;
-    }
-    if(quadrantvalue == 2){
-        aifuncyOffset = 107;
-        AIturn=0;
-    }
-    if(quadrantvalue == 3){
-        aifuncyOffset = 107;
-        AIturn=0;
-    }
-    if(quadrantvalue == 4){
-        aifuncyOffset = 321;
-        AIturn=0;
-    }
-    if(quadrantvalue == 5){
-        aifuncyOffset = 321;
-        AIturn=0;
-    }
-    if(quadrantvalue == 6){
-        aifuncyOffset = 321;
-        AIturn=0;
-    }
-    if(quadrantvalue == 7){
-        aifuncyOffset = 535;
-        AIturn=0;
-    }
-    if(quadrantvalue == 8){
-        aifuncyOffset = 535;
-        AIturn=0;
-    }
-    if(quadrantvalue == 9){
-        aifuncyOffset = 535;
-        AIturn=0;
-    }
-    return aifuncxOffset;
-
-}
-
-
 void appDrawScene() {
-    
-    
-    
-    
-    
-    
-    
-    //TWO PLAYER START HERE
-   
-   if (playerset == 2 && winnercheck == false){
-       
-        if (xchecksarr[1] == 1 && xchecksarr[2] == 1 && xchecksarr[3] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (xchecksarr[4] == 1 && xchecksarr[5] == 1 && xchecksarr[6] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (xchecksarr[7] == 1 && xchecksarr[8] == 1 && xchecksarr[9] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (xchecksarr[1] == 1 && xchecksarr[5] == 1 && xchecksarr[9] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (xchecksarr[3] == 1 && xchecksarr[5] == 1 && xchecksarr[7] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (xchecksarr[1] == 1 && xchecksarr[4] == 1 && xchecksarr[7] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (xchecksarr[2] == 1 && xchecksarr[5] == 1 && xchecksarr[8] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (xchecksarr[3] == 1 && xchecksarr[6] == 1 && xchecksarr[9] == 1){
-        cout<<" X IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    //O possibilies
-    else if (ochecksarr[1] == 1 && ochecksarr[2] == 1 && ochecksarr[3] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (ochecksarr[4] == 1 && ochecksarr[5] == 1 && ochecksarr[6] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (ochecksarr[7] == 1 && ochecksarr[8] == 1 && ochecksarr[9] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (ochecksarr[1] == 1 && ochecksarr[5] == 1 && ochecksarr[9] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (ochecksarr[3] == 1 && ochecksarr[5] == 1 && ochecksarr[7] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (ochecksarr[1] == 1 && ochecksarr[4] == 1 && ochecksarr[7] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (ochecksarr[2] == 1 && ochecksarr[5] == 1 && ochecksarr[8] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    else if (ochecksarr[3] == 1 && ochecksarr[6] == 1 && ochecksarr[9] == 1){
-        cout<<" O IS THE WINNER" <<endl;
-        winnercheck = true;
-    }
-    
-	funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
-	funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
-    //cout <<curQuad<<endl;
-
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -242,307 +126,19 @@ void appDrawScene() {
 	// Set up the transformations stack
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
- if (onClick == true){
-     
-
-if (curQuad > 0 && curQuad <= 9){
-    if(remain == 0 ){
-        
-        ochecksarr[curQuad] = 1;
-        xoffsetarr[curQuad + 9] = funcxOffset;
-        yoffsetarr[curQuad + 9] = funcyOffset;
+    
+    // Draw squares for our grid
+    
+    for (int i = 0; i < grid.size(); i++) {
+        grid[i].draw();
     }
-    if(remain != 0){
-        xchecksarr[curQuad] = 1;
-        xoffsetarr[curQuad] = funcxOffset;
-        yoffsetarr[curQuad] = funcyOffset;
-    }
-}
 
 
-    // Draw stuff here
-    
-    
-    
 
-        
-        for (int i = 10; i <= 18; i ++){
-            if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
-        
-    //This is for the "O"
-    
-    //Draw a Circle Here
-
-    glColor3f(0.0, 1.0, 0.0);
-	
-	glLineWidth(5);
-	glBegin(GL_LINES);
-
-	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] + .25);
-	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] - .25);
-
-	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] + .25);
-	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] - .25);
-    
-    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] +.25);
-    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] -.25);
-    
-    glVertex2f(xoffsetarr[i] -.25, yoffsetarr[i] +.25);
-    glVertex2f(xoffsetarr[i] -.25 , yoffsetarr[i] -.25);
-    
-
-	glEnd();
-    
-    
-    
-    }
-        }
-    
-    for (int i = 1; i <= 9; i++){
-        if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
-    
-             
-            
-        
-        glColor3f(0.0 , 0.0, 1.0);
-        glLineWidth(5);
-        glBegin(GL_LINES);
-
-        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]+.25);
-        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]-.25);
-
-        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]+.25);
-        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]-.25);
-
-        glEnd();
-                }
-    }
-                
- }
-    
-   
-    
-    
-
-    //GRID DREW HERE
-
-    glColor3f(1.0, 0.0, 0.0);
-
-    glLineWidth(5);
-
-    glBegin(GL_LINES);
-
-    //bottom horizontal
-    glVertex2f(-1.0, -0.33);
-    glVertex2f(1.0, -0.33);
-    
-    //left vertical
-    glVertex2f(-0.33, 1.0);
-    glVertex2f(-0.33, -1.0);
-    
-    //middle horizontal
-    //glVertex2f(-1.0, 0.0);
-    //glVertex2f(1.0, 0.0);
-    
-    //middle vertical
-    //glVertex2f(0.0, 1.0);
-    //glVertex2f(0.0, -1.0);
-    
-    //top horizontal
-    glVertex2f(-1.0, 0.33);
-    glVertex2f(1.0, 0.33);
-    
-    //right vertical
-    glVertex2f(0.33, 1.0);
-    glVertex2f(0.33, -1.0);
-    
-    glEnd();
-    
-    
-    
-    //GRID ENDING HERE
-    
 	// We have been drawing everything to the back buffer
 	// Swap the buffers to see the result of what we drew
 	glFlush();
 	glutSwapBuffers();
-}
-
-
-
-
-
-
-//SINGLE PLAYER VERSUS AI START HERE 
-
-
-
-
-
-   if (playerset == 1 && winnercheck == false){
-    
-	funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
-	funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
-    //cout <<curQuad<<endl;
-
-	// Clear the screen
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Set background color to black
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-
-	// Set up the transformations stack
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
- if (onClick == true){
-     
-
-if (curQuad > 0 && curQuad <= 9){
-    if(remain == 0 ){
-        
-        ochecksarr[curQuad] = 1;
-        xoffsetarr[curQuad + 9] = funcxOffset;
-        yoffsetarr[curQuad + 9] = funcyOffset;
-        AIturn+1;
-        
-    }
-   
-    if(remain != 0){
-         if(AIturn == 1){
-        
-        for(int i = 1; i < 10; i++){
-            if(ochecksarr[i] == 0 && xchecksarr[i] == 0){
-                
-        
-        funcxOffset = AIxOffsets(i);
-        funcyOffset = AIyOffsets(i);
-        
-        funcxOffset = (2.0f*(funcxOffset / float(width))) - 1.0f;
-        funcyOffset = 1.0f - (2.0f*(funcyOffset / float(height)));
-        xoffsetarr[i] = funcxOffset;
-        yoffsetarr[i] = funcyOffset;
-        xchecksarr[i] = 1;
-        increm++;
-        remain = (increm % 2);
-        
-    }
-        }
-}
-}
-}
-
-
-    // Draw stuff here
-    
-    
-    
-
-        
-        for (int i = 10; i <= 18; i ++){
-            if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
-        
-    //This is for the "O"
-    
-    //Draw a Circle Here
-
-    glColor3f(0.0, 1.0, 0.0);
-	
-	glLineWidth(5);
-	glBegin(GL_LINES);
-
-	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] + .25);
-	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] - .25);
-
-	glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] + .25);
-	glVertex2f(xoffsetarr[i] - .25, yoffsetarr[i] - .25);
-    
-    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] +.25);
-    glVertex2f(xoffsetarr[i] + .25, yoffsetarr[i] -.25);
-    
-    glVertex2f(xoffsetarr[i] -.25, yoffsetarr[i] +.25);
-    glVertex2f(xoffsetarr[i] -.25 , yoffsetarr[i] -.25);
-    
-
-	glEnd();
-    
-    
-    
-    }
-        }
-    
-    for (int i = 1; i <= 9; i++){
-        if (xoffsetarr[i] != 5 && yoffsetarr[i] != 5){
-    
-             
-        cout<<"We should be drawing an X here at " <<xoffsetarr[i] << " , " <<yoffsetarr[i]<<endl;
-                    
-        glColor3f(0.0 , 0.0, 1.0);
-        glLineWidth(5);
-        glBegin(GL_LINES);
-
-        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]+.25);
-        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]-.25);
-
-        glVertex2f(xoffsetarr[i]+.25 , yoffsetarr[i]+.25);
-        glVertex2f(xoffsetarr[i]-.25 , yoffsetarr[i]-.25);
-
-        glEnd();
-                }
-    }
-                
- }
-    
-   
-    
-    
-
-    //GRID DREW HERE
-
-    glColor3f(1.0, 0.0, 0.0);
-
-    glLineWidth(5);
-
-    glBegin(GL_LINES);
-
-    //bottom horizontal
-    glVertex2f(-1.0, -0.33);
-    glVertex2f(1.0, -0.33);
-    
-    //left vertical
-    glVertex2f(-0.33, 1.0);
-    glVertex2f(-0.33, -1.0);
-    
-    //middle horizontal
-    //glVertex2f(-1.0, 0.0);
-    //glVertex2f(1.0, 0.0);
-    
-    //middle vertical
-    //glVertex2f(0.0, 1.0);
-    //glVertex2f(0.0, -1.0);
-    
-    //top horizontal
-    glVertex2f(-1.0, 0.33);
-    glVertex2f(1.0, 0.33);
-    
-    //right vertical
-    glVertex2f(0.33, 1.0);
-    glVertex2f(0.33, -1.0);
-    
-    glEnd();
-    
-    
-    
-    //GRID ENDING HERE
-    
-	// We have been drawing everything to the back buffer
-	// Swap the buffers to see the result of what we drew
-	glFlush();
-	glutSwapBuffers();
-}
-
-    
 }
 
 //-------------------------------------------------------
@@ -551,10 +147,6 @@ if (curQuad > 0 && curQuad <= 9){
 // Arguments: 	
 //	x, y - the coordinates to be updated
 //-------------------------------------------------------
-
-
-    
-
 void windowToScene(float& x, float& y) {
 	x = (2.0f*(x / float(width))) - 1.0f;
 	y = 1.0f - (2.0f*(y / float(height)));
@@ -568,105 +160,6 @@ void windowToScene(float& x, float& y) {
 //	s 	 - state, either mouse-up or mouse-down
 //	x, y - coordinates of the mouse when click occured
 //-------------------------------------------------------
-
-
-int * QuadrantCheck(float x, float y){
-    //a lot of if statements that are tedious because I'm too dumb to figure out how to do it iteravily
-    //quad check so we know where we are and what gets full
-    if (x >= 0 && x < 214 && y>=0 && y < 214){
-        quad1 = true;
-        quadarr[1] = 1;
-        curQuad = 1;
-        funcxOffset = 107;
-        funcyOffset = 107;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x > 214 && x < 428 && y >= 0 && y < 214){
-        quad2 = true;
-        quadarr[2] = 1;
-        curQuad = 2;
-        funcxOffset = 321;
-        funcyOffset = 107;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x > 428 && x < 640 && y>=0 && y < 214){
-        quad3 = true;
-        quadarr[3] = 1;
-        curQuad = 3;
-        funcxOffset = 535;
-        funcyOffset = 107;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x >= 0 && x < 214 && y> 214 && y < 428){
-        quad4 = true;
-        quadarr[4] = 1;
-        curQuad = 4;
-        funcxOffset = 107;
-        funcyOffset = 321;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x > 214 && x < 428 && y> 214 && y < 428){
-        quad5 = true;
-        quadarr[5] = 1;
-        curQuad = 5;
-        funcxOffset = 321;
-        funcyOffset = 321;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x > 428 && x < 640 && y> 214 && y < 428){
-        quad6 = true;
-        quadarr[6] = 1;
-        curQuad = 6;
-        funcxOffset = 535;
-        funcyOffset = 321;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x >= 0 && x < 214 && y> 428 && y < 640){
-        quad7 = true;
-        quadarr[7] = 1;
-        curQuad = 7;
-        funcxOffset = 107;
-        funcyOffset = 535;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x > 214 && x < 428 && y> 428 && y < 640){
-        quad8 = true;
-        quadarr[8] = 1;
-        curQuad = 8;
-        funcxOffset = 321;
-        funcyOffset = 535;
-        increm++;
-        remain = (increm % 2);
-    }
-    else if (x > 428 && x < 640 && y> 428 && y < 640){
-        quad9 = true;
-        quadarr[9] = 1;
-        curQuad = 9;
-        funcxOffset = 535;
-        funcyOffset = 535;
-        increm++;
-        remain = (increm % 2);
-    }
-    
-    
-    
-    valuearr[0] = curQuad;
-    valuearr[1] = funcxOffset;
-    valuearr[2] = funcyOffset;
-
-    return valuearr;
-}
-    
-    
-    
-
 void appReshapeFunc(int w, int h) {
 	// Window size has changed
 	width = w;
@@ -726,31 +219,49 @@ void appMouseFunc(int b, int s, int x, int y) {
 	// Convert from Window to Scene coordinates
 	float mx = (float)x;
 	float my = (float)y;
-    
-    
+
 	windowToScene(mx, my);
+    
+    if (b == 0){
+        if (s == 0){
+            // I clicked the left button
+            for (int i = 0; i < grid.size(); i++) {
+                if (!gameOver){
+                    if (grid[i].contains(mx, my)){
+                        if (!grid[i].occupied){
+                            if (player1){
+                                grid[i].shape = cross;
+                            }
+                            else{
+                                grid[i].shape = circle;
+                            }
+                            grid[i].occupied = true;
+                            player1 = !player1;
+                        }
+                        checkGameState(grid);
+                        if (ai && !gameOver){
+                            for (int i = 0; i < grid.size(); i++) {
+                                if (!grid[i].occupied){
+                                    grid[i].shape = circle;
+                                    grid[i].occupied = true;
+                                    player1 = !player1;
+                                    break;
+                                }
+                            }
+                            checkGameState(grid);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
 	// Redraw the scene by calling appDrawScene above
 	// so that the point we added above will get painted
-    if(b == 0){
-        linecheck = true;
-    if( s == 1) {
-        onClick = true;
-        
-        
-        QuadrantCheck(x,y);
-        
-       //cout<<"We clicked at ( " <<x << " , " << y<< " ) and we are in quadrant "<< valuearr[0]<<endl;
-        
-    }
-    if (s == 0){
-        onClick = false;
-    }
 	glutPostRedisplay();
-     
 }
-}
-   
+
 //-------------------------------------------------------
 // A function to handle mouse dragging
 // Called every time mouse moves while button held down
@@ -761,7 +272,6 @@ void appMotionFunc(int x, int y) {
 
 	// Again, we redraw the scene
 	glutPostRedisplay();
-    
 }
 
 //-------------------------------------------------------
@@ -776,6 +286,38 @@ void appKeyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
         case 27:
             exit(0);
+            break;
+        case 'a':
+            if (gameOver){
+                for (int i = 0; i < grid.size(); i++) {
+                    grid[i].shape = none;
+                    grid[i].occupied = false;
+                    gameOver = false;
+                    player1 = true;
+                }
+                ai = true;
+            }
+            break;
+        case 'p':
+            if (gameOver){
+                for (int i = 0; i < grid.size(); i++) {
+                    grid[i].shape = none;
+                    grid[i].occupied = false;
+                    gameOver = false;
+                    player1 = true;
+                }
+                ai = false;
+            }
+            break;
+        case ' ':
+            if (gameOver){
+                for (int i = 0; i < grid.size(); i++) {
+                    grid[i].shape = none;
+                    grid[i].occupied = false;
+                    gameOver = false;
+                    player1 = true;
+                }
+            }
             break;
         default:
             break;
@@ -792,8 +334,6 @@ void idle() {
 
 
 int main(int argc, char** argv) {
-    cout<<"PLEASE ENTER 1 FOR SINGLE PLAYER OR 2 FOR TWO PLAYER"<<endl;
-    cin>>playerset;
 	// Initialize GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
@@ -808,7 +348,18 @@ int main(int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 
-
+    grid.push_back(Rect(-0.8, 0.8, 0.4, 0.4));
+    grid.push_back(Rect(-0.2, 0.8, 0.4, 0.4));
+    grid.push_back(Rect(0.4, 0.8, 0.4, 0.4));
+    
+    grid.push_back(Rect(-0.8, 0.2, 0.4, 0.4));
+    grid.push_back(Rect(-0.2, 0.2, 0.4, 0.4));
+    grid.push_back(Rect(0.4, 0.2, 0.4, 0.4));
+    
+    grid.push_back(Rect(-0.8, -0.4, 0.4, 0.4));
+    grid.push_back(Rect(-0.2, -0.4, 0.4, 0.4));
+    grid.push_back(Rect(0.4, -0.4, 0.4, 0.4));
+    
 	// Set callback for drawing the scene
 	glutDisplayFunc(appDrawScene);
 
