@@ -10,6 +10,7 @@
 #include <GL/freeglut.h>
 #endif
 
+#include <cstdlib>
 #include "Rect.h"
 
 using namespace std;
@@ -240,10 +241,12 @@ void appMouseFunc(int b, int s, int x, int y) {
                         }
                         checkGameState(grid);
                         if (ai && !gameOver){
+                            
                             for (int i = 0; i < grid.size(); i++) {
-                                if (!grid[i].occupied){
-                                    grid[i].shape = circle;
-                                    grid[i].occupied = true;
+                                int v1 = rand() % grid.size();
+                                if (!grid[v1].occupied){
+                                    grid[v1].shape = circle;
+                                    grid[v1].occupied = true;
                                     player1 = !player1;
                                     break;
                                 }
